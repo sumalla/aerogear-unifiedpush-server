@@ -16,11 +16,14 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.jboss.aerogear.security.auth.LoggedUser;
 import org.jboss.aerogear.security.authz.Secure;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
 import org.jboss.aerogear.unifiedpush.service.PushApplicationService;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Instance;
@@ -41,6 +44,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.ext.ContextResolver;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -56,6 +60,21 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     private SecurityContext sec;
 
     private static final Logger LOGGER = Logger.getLogger(PushApplicationEndpoint.class.getSimpleName());
+
+
+    public PushApplicationEndpoint() {
+        ResteasyProviderFactory.getInstance().registerProviderInstance(new ContextResolver<ObjectMapper>() {
+            private ObjectMapper objectMapper;
+
+            public ObjectMapper getContext(Class<?> objectType) {
+                if (objectMapper == null) {
+                    objectMapper = new ObjectMapper();
+                    objectMapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector());
+                }
+                return objectMapper;
+            }
+        });
+    }
 
     // CREATE
     @POST
