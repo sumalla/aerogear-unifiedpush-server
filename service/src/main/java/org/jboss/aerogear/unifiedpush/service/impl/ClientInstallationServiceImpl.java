@@ -19,7 +19,6 @@ package org.jboss.aerogear.unifiedpush.service.impl;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.dao.InstallationDao;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
@@ -128,11 +127,6 @@ public class ClientInstallationServiceImpl implements ClientInstallationService 
         for (Installation installation : installations) {
             removeInstallation(installation);
         }
-    }
-
-    @Override
-    public PageResult<Installation> findInstallationsByVariant(String variantId, Integer page, Integer pageSize) {
-        return dao.findInstallationsByVariant(variantId, developer.get(), page, pageSize);
     }
 
     @Override
