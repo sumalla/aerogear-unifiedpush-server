@@ -25,8 +25,8 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
-import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
-import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.annotations.Admin;
+import org.jboss.aerogear.unifiedpush.service.annotations.Developer;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchByDeveloperServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushSearchServiceImpl;
@@ -69,8 +69,12 @@ public abstract class AbstractBaseServiceTest {
     @Inject
     protected PushApplicationServiceImpl pushApplicationService;
 
-    @Inject
-    protected PushSearchByDeveloperServiceImpl searchApplicationService;
+    @Inject @Developer
+    protected PushSearchByDeveloperServiceImpl developerSearch;
+
+    @Inject @Admin
+    protected PushSearchService adminSearch;
+
 
     // ===================== JUnit hooks =====================
 
@@ -110,18 +114,22 @@ public abstract class AbstractBaseServiceTest {
     @Module
     public Beans getBeans() {
         final Beans beans = new Beans();
-        beans.addManagedClass(ClientInstallationServiceImpl.class);
         beans.addManagedClass(JPAPushMessageInformationDao.class);
         beans.addManagedClass(JPAInstallationDao.class);
-        beans.addManagedClass(GenericVariantServiceImpl.class);
         beans.addManagedClass(JPAVariantDao.class);
         beans.addManagedClass(PushSearchByDeveloperServiceImpl.class);
         beans.addManagedClass(PushApplicationServiceImpl.class);
         beans.addManagedClass(JPAPushApplicationDao.class);
         beans.addManagedClass(PushSearchServiceImpl.class);
         beans.addManagedClass(SearchManager.class);
+        beans.addManagedClass(JPAPushMessageInformationDao.class);
+
+        addSpecificBeans(beans);
 
         return beans;
+    }
+
+    protected void addSpecificBeans(Beans beans) {
     }
 
     @Module

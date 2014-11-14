@@ -26,6 +26,7 @@ import org.jboss.aerogear.unifiedpush.dao.PushApplicationDao;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantDao;
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
+import org.jboss.aerogear.unifiedpush.service.annotations.Admin;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.jboss.aerogear.unifiedpush.service.dashboard.Application;
 import org.jboss.aerogear.unifiedpush.service.dashboard.ApplicationVariant;
@@ -41,6 +42,7 @@ import java.util.List;
  * Implementation of the <code>PushSearchService</code> internally used for 'admin' role,
  * to query all, instead of being tied to a specific user/login name.
  */
+@Admin
 public class PushSearchServiceImpl implements PushSearchService {
 
     @Inject

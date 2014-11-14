@@ -16,8 +16,11 @@
  */
 package org.jboss.aerogear.unifiedpush.service;
 
+import org.apache.openejb.jee.Beans;
 import org.jboss.aerogear.unifiedpush.api.AndroidVariant;
 import org.jboss.aerogear.unifiedpush.api.Installation;
+import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
+import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
 import org.junit.Test;
 
 import javax.inject.Inject;
@@ -45,6 +48,11 @@ public class ClientInstallationServiceTest extends AbstractBaseServiceTest {
         androidVariant.setName("Android");
         androidVariant.setDeveloper("me");
         variantService.addVariant(androidVariant);
+    }
+
+    protected void addSpecificBeans(Beans beans) {
+        beans.addManagedClass(ClientInstallationServiceImpl.class);
+        beans.addManagedClass(GenericVariantServiceImpl.class);
     }
 
     @Test

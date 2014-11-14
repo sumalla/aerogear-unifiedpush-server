@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
+import org.jboss.aerogear.unifiedpush.service.annotations.Admin;
+import org.jboss.aerogear.unifiedpush.service.annotations.Developer;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
@@ -36,10 +38,11 @@ public class SearchManager implements Serializable {
 
     private HttpServletRequest httpServletRequest;
 
-    @Inject
-    private PushSearchServiceImpl searchAll;
-    @Inject
-    private PushSearchByDeveloperServiceImpl searchByDeveloper;
+    @Inject @Admin
+    private PushSearchService searchAll;
+
+    @Inject @Developer
+    private PushSearchService searchByDeveloper;
 
     public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
         this.httpServletRequest = httpServletRequest;
