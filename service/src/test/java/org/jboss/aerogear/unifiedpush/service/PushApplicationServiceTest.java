@@ -98,6 +98,10 @@ public class PushApplicationServiceTest extends AbstractBaseServiceTest {
 
         assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).isNotEmpty();
         assertThat(searchApplicationService.findAllPushApplicationsForDeveloper(0, 10).getResultList()).hasSize(1);
+
+
+
+
     }
 
     @Test

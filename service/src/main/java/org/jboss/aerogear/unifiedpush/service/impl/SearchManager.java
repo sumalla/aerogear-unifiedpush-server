@@ -54,13 +54,8 @@ public class SearchManager implements Serializable {
      */
     @Produces @RequestScoped
     public PushSearchService getSearchService() {
-
-        boolean isAdmin = httpServletRequest.isUserInRole("admin");
-
-        if (isAdmin) {
-            return searchServices.select(new RoleLiteral(RoleType.ADMIN)).get();
-        }
-        return searchServices.select(new RoleLiteral(RoleType.DEVELOPER)).get();
+        final RoleType roleType = RoleType.toAdminOrDeveloper(httpServletRequest.isUserInRole("admin"));
+        return searchServices.select(new RoleLiteral(roleType)).get();
     }
 
     /**

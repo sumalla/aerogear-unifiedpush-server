@@ -29,4 +29,12 @@ public enum RoleType {
     public String getRoleName() {
         return roleName;
     }
+
+    public static RoleType toAdminOrDeveloper(boolean isAdmin) {
+        if (isAdmin) {
+            return ADMIN;
+        } else {
+            return DEVELOPER;
+        }
+    }
 }
