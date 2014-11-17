@@ -17,13 +17,15 @@
 package org.jboss.aerogear.unifiedpush.service.impl;
 
 import org.jboss.aerogear.unifiedpush.service.PushSearchService;
-import org.jboss.aerogear.unifiedpush.service.annotations.AdminRole;
-import org.jboss.aerogear.unifiedpush.service.annotations.DeveloperRole;
 import org.jboss.aerogear.unifiedpush.service.annotations.LoggedIn;
+import org.jboss.aerogear.unifiedpush.service.annotations.role.RoleLiteral;
+import org.jboss.aerogear.unifiedpush.service.annotations.role.RoleType;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -38,11 +40,8 @@ public class SearchManager implements Serializable {
 
     private HttpServletRequest httpServletRequest;
 
-    @Inject @AdminRole
-    private PushSearchService searchAll;
-
-    @Inject @DeveloperRole
-    private PushSearchService searchByDeveloper;
+    @Inject @Any
+    private Instance<PushSearchService> searchServices;
 
     public void setHttpServletRequest(HttpServletRequest httpServletRequest) {
         this.httpServletRequest = httpServletRequest;
@@ -53,14 +52,15 @@ public class SearchManager implements Serializable {
      *
      * @return an implementation of the search service
      */
+    @Produces @RequestScoped
     public PushSearchService getSearchService() {
 
         boolean isAdmin = httpServletRequest.isUserInRole("admin");
 
         if (isAdmin) {
-            return searchAll;
+            return searchServices.select(new RoleLiteral(RoleType.ADMIN)).get();
         }
-        return searchByDeveloper;
+        return searchServices.select(new RoleLiteral(RoleType.DEVELOPER)).get();
     }
 
     /**

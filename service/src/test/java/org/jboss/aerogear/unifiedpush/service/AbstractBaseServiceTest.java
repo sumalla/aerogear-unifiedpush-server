@@ -26,7 +26,8 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
-import org.jboss.aerogear.unifiedpush.service.annotations.DeveloperRole;
+import org.jboss.aerogear.unifiedpush.service.annotations.role.Role;
+import org.jboss.aerogear.unifiedpush.service.annotations.role.RoleType;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
@@ -74,7 +75,7 @@ public abstract class AbstractBaseServiceTest {
     @Inject
     protected PushApplicationServiceImpl pushApplicationService;
 
-    @Inject @DeveloperRole
+    @Inject @Role(RoleType.DEVELOPER)
     protected PushSearchService searchApplicationService;
 
     // ===================== JUnit hooks =====================
@@ -91,6 +92,8 @@ public abstract class AbstractBaseServiceTest {
         when(context.getToken()).thenReturn(token);
         when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
         when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);
+
+        when(httpServletRequest.isUserInRole("admin")).thenReturn(Boolean.TRUE);
 
         // glue it to serach mgr
         searchManager.setHttpServletRequest(httpServletRequest);
