@@ -26,6 +26,7 @@ import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
+import org.jboss.aerogear.unifiedpush.service.annotations.DeveloperRole;
 import org.jboss.aerogear.unifiedpush.service.impl.ClientInstallationServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.GenericVariantServiceImpl;
 import org.jboss.aerogear.unifiedpush.service.impl.PushApplicationServiceImpl;
@@ -55,6 +56,9 @@ import static org.mockito.Mockito.when;
 @RunWith(ApplicationComposer.class)
 public abstract class AbstractBaseServiceTest {
 
+    // default
+    protected String userName = "admin";
+
     @Mock
     protected HttpServletRequest httpServletRequest;
 
@@ -70,8 +74,8 @@ public abstract class AbstractBaseServiceTest {
     @Inject
     protected PushApplicationServiceImpl pushApplicationService;
 
-    @Inject
-    protected PushSearchByDeveloperServiceImpl searchApplicationService;
+    @Inject @DeveloperRole
+    protected PushSearchService searchApplicationService;
 
     // ===================== JUnit hooks =====================
 
@@ -83,7 +87,7 @@ public abstract class AbstractBaseServiceTest {
         // Keycloak test environment
         AccessToken token = new AccessToken();
         //The current developer will always be the admin in this testing scenario
-        token.setPreferredUsername("admin");
+        token.setPreferredUsername(userName);
         when(context.getToken()).thenReturn(token);
         when(keycloakPrincipal.getKeycloakSecurityContext()).thenReturn(context);
         when(httpServletRequest.getUserPrincipal()).thenReturn(keycloakPrincipal);

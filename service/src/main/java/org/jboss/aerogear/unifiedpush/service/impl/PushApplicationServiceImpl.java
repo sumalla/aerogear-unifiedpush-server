@@ -42,7 +42,6 @@ public class PushApplicationServiceImpl implements PushApplicationService {
 
     @Override
     public void addPushApplication(PushApplication pushApp) {
-
         pushApp.setDeveloper(loginName.get());
         pushApplicationDao.create(pushApp);
     }
