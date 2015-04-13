@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
@@ -48,10 +49,19 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
     @Inject
     private PushApplicationService pushAppService;
 
-    // CREATE
+    /**
+     * Create Push Application
+     *
+     * @param pushApp   new {@link PushApplication}
+     * @return          created {@link PushApplication}
+     *
+     * @statuscode 201 The PushApplication Variant created successfully
+     * @statuscode 400 The format of the client request was incorrect
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response registerPushApplication(PushApplication pushApp) {
 
          // some validation
@@ -71,9 +81,16 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
                 .build();
     }
 
-    // READ
+    /**
+     * List Push Applications
+     *
+     * @param page      page number
+     * @param pageSize  number of items per page
+     * @return          list of {@link PushApplication}s
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.util.List<org.jboss.aerogear.unifiedpush.api.PushApplication>")
     public Response listAllPushApplications(@QueryParam("page") Integer page,
                                             @QueryParam("per_page") Integer pageSize) {
         if (pageSize != null) {
@@ -90,9 +107,18 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         return Response.ok(pageResult.getResultList()).header("total", pageResult.getCount()).build();
     }
 
+    /**
+     * Get Push Application.
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  requested {@link PushApplication}
+     *
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @GET
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response findById(@PathParam("pushAppID") String pushApplicationID) {
 
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
@@ -103,11 +129,21 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
-    // UPDATE
+    /**
+     * Update Push Application
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @param updatedPushApp    new info of {@link PushApplication}
+     *
+     * @statuscode 204 The PushApplication updated successfully
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @PUT
     @Path("/{pushAppID}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response updatePushApplication(@PathParam("pushAppID") String pushApplicationID, PushApplication updatedPushApp) {
 
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
@@ -136,11 +172,20 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
-    // UPDATE (MasterSecret Reset)
+    /**
+     * Reset MasterSecret for Push Application
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  updated {@link PushApplication}
+     *
+     * @statuscode 204 The MasterSecret for Push Application reset successfully
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @PUT
     @Path("/{pushAppID}/reset")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.PushApplication")
     public Response resetMasterSecret(@PathParam("pushAppID") String pushApplicationID) {
 
         //PushApplication pushApp = pushAppService.findByPushApplicationIDForDeveloper(pushApplicationID, extractUsername(request));
@@ -158,10 +203,18 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
-    // DELETE
+    /**
+     * Delete Push Application
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     *
+     * @statuscode 204 The PushApplication successfully deleted
+     * @statuscode 404 The requested PushApplication resource does not exist
+     */
     @DELETE
     @Path("/{pushAppID}")
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.Void")
     public Response deletePushApplication(@PathParam("pushAppID") String pushApplicationID) {
 
         PushApplication pushApp = getSearch().findByPushApplicationIDForDeveloper(pushApplicationID);
@@ -173,8 +226,15 @@ public class PushApplicationEndpoint extends AbstractBaseEndpoint {
         return Response.status(Status.NOT_FOUND).entity("Could not find requested PushApplicationEntity").build();
     }
 
+    /**
+     * Count Push Applications
+     *
+     * @param pushApplicationID id of {@link PushApplication}
+     * @return                  count number for each {@link org.jboss.aerogear.unifiedpush.api.VariantType}
+     */
     @GET
     @Path("/{pushAppID}/count")
+    @ReturnType("java.util.Map<java.lang.String, java.lang.Long>")
     public Response countInstallations(@PathParam("pushAppID") String pushApplicationID) {
 
         Map<String, Long> result = pushAppService.countInstallationsByType(pushApplicationID);

@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.rest.sender;
 
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.PushApplication;
 import org.jboss.aerogear.unifiedpush.message.SenderService;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
@@ -100,9 +101,17 @@ public class PushNotificationSenderEndpoint {
      * @HTTP 401 (Unauthorized) The request requires authentication.
      * @HTTP 404 (Not Found) The requested PushApplication resource does not exist.
      * @RequestHeader aerogear-sender The header to identify the used client. If the header is not present, the standard "user-agent" header is used.
+     *
+     * @param message   message to send
+     * @return          successful string {@code Job submitted}
+     *
+     * @statuscode 202 Indicates the Job has been accepted and is being process by the AeroGear UnifiedPush Server
+     * @statuscode 401 The request requires authentication
+     * @statuscode 404 The requested PushApplication resource does not exist
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @ReturnType("java.lang.String")
     public Response send(final UnifiedPushMessage message, @Context HttpServletRequest request) {
 
         final PushApplication pushApplication = loadPushApplicationWhenAuthorized(request);

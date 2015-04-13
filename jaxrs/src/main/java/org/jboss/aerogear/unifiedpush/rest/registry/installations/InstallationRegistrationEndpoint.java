@@ -18,18 +18,25 @@ package org.jboss.aerogear.unifiedpush.rest.registry.installations;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qmino.miredot.annotations.ReturnType;
 import org.jboss.aerogear.unifiedpush.api.Installation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.rest.AbstractBaseEndpoint;
-import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.aerogear.unifiedpush.rest.util.HttpBasicHelper;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
+import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -92,10 +99,19 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @HTTP 400 (Bad Request) The format of the client request was incorrect (e.g. missing required values).
      * @HTTP 401 (Unauthorized) The request requires authentication.
      * @HTTP 404 (Not Found) The requested Variant resource does not exist.
+     *
+     * @param entity    {@link Installation} for Device registration
+     * @return          registered {@link Installation}
+     *
+     * @statuscode 200 Successful storage of the device metadata
+     * @statuscode 400 The format of the client request was incorrect (e.g. missing required values)
+     * @statuscode 401 The request requires authentication
+     * @statuscode 404 The requested Variant resource does not exist
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @ReturnType("org.jboss.aerogear.unifiedpush.api.Installation")
     public Response registerInstallation(
             Installation entity,
             @Context HttpServletRequest request) {
@@ -140,9 +156,16 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @HTTP 204 (OK) Successful unregistration.
      * @HTTP 401 (Unauthorized) The request requires authentication.
      * @HTTP 404 (Not Found) The requested device metadata does not exist.
+     *
+     * @param token device token
+     *
+     * @statuscode 204 Successful unregistration
+     * @statuscode 401 The request requires authentication
+     * @statuscode 404 The requested device metadata does not exist
      */
     @DELETE
     @Path("{token: .*}")
+    @ReturnType("java.lang.Void")
     public Response unregisterInstallations(
             @PathParam("token") String token,
             @Context HttpServletRequest request) {
@@ -211,10 +234,19 @@ public class InstallationRegistrationEndpoint extends AbstractBaseEndpoint {
      * @HTTP 400 (Bad Request) The format of the client request was incorrect.
      * @HTTP 401 (Unauthorized) The request requires authentication.
      * @HTTP 404 (Not Found) The requested Variant resource does not exist.
+     *
+     * @param form  JSON file to import
+     * @return      successful string: {@code Job submitted for processing}
+     *
+     * @statuscode 200 Successful submission of import job
+     * @statuscode 400 The format of the client request was incorrect
+     * @statuscode 401 The request requires authentication
+     * @statuscode 404 The requested Variant resource does not exist
      */
     @POST
     @Path("/importer")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @ReturnType("java.lang.String")
     public Response importDevice(
             @MultipartForm
             ImporterForm form,
