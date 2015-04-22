@@ -23,16 +23,7 @@ CREATE TABLE category (
 -- Table structure for table category_seq
 --
 
-CREATE TABLE category_seq (
-  next_val BIGINT DEFAULT NULL
-);
-
---
--- Dumping data for table category_seq
---
-
-INSERT INTO category_seq (next_val) VALUES
-  (2);
+CREATE SEQUENCE category_seq AS INTEGER START WITH 100;
 
 -- --------------------------------------------------------
 
