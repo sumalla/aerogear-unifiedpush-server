@@ -82,24 +82,6 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
     }
 
     @Override
-    //TODO sub optimal fetch join doesn't work well with min max all results will get fetched and min max will be in memory
-    public PageResult<PushMessageInformation> findAllForVariant(String variantID, boolean ascending, Integer page, Integer pageSize) {
-        final String query = "select pmi from PushMessageInformation pmi JOIN fetch pmi.variantInformations vi where vi.variantID = :variantID ORDER BY pmi.submitDate " + ascendingOrDescending(ascending);
-        final String countQuery = "select count(*) from PushMessageInformation pmi JOIN pmi.variantInformations vi where vi.variantID = :variantID";
-        return executePagedQuery(variantID, "variantID", page, pageSize, query, countQuery);
-    }
-
-    private PageResult<PushMessageInformation> executePagedQuery(String param, String paramName, Integer page, Integer pageSize, String query, String countQuery) {
-        List<PushMessageInformation> pushMessageInformationList = createQuery(query)
-                .setParameter(paramName, param)
-                .setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
-
-        Long count = createQuery(countQuery, Long.class).setParameter(paramName, param).getSingleResult();
-
-        return new PageResult<PushMessageInformation>(pushMessageInformationList, count);
-    }
-
-    @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {
         return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
                 "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)", Long.class)
