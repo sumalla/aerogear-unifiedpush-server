@@ -54,12 +54,27 @@
             <version>4.3.3</version>
         </dependency>
 
+        <!-- JBoss/EAP specific HA support -->
+        <dependency>
+            <groupId>org.jboss.msc</groupId>
+            <artifactId>jboss-msc</artifactId>
+            <version>1.1.5.Final-redhat-1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.as</groupId>
+            <artifactId>jboss-as-clustering-singleton</artifactId>
+            <version>7.5.0.Final-redhat-21</version>
+        </dependency>
     </dependencies>
 
     <repositories>
         <repository>
             <id>JBOSS_NEXUS</id>
             <url>http://repository.jboss.org/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>RHT</id>
+            <url>http://maven.repository.redhat.com/techpreview/all/</url>
         </repository>
     </repositories>
 
