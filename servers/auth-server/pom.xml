@@ -59,14 +59,18 @@
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-model-jpa</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-model-sessions-mem</artifactId>
-        </dependency>
-        <dependency>
+            <artifactId>keycloak-model-sessions-infinispan</artifactId>
+        </dependency-->
+        <!--dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-invalidation-cache-infinispan</artifactId>
+        </dependency-->
+        <!--dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-model-sessions-jpa</artifactId>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
