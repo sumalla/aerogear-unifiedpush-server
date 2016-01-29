@@ -30,6 +30,11 @@ import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsumer;
+import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensProducer;
+import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsConsumer;
+import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithVariantsProducer;
+import org.jboss.aerogear.unifiedpush.message.jms.TriggerMetricCollectionConsumer;
 import org.jboss.aerogear.unifiedpush.message.util.ConfigurationUtils;
 import org.jboss.aerogear.unifiedpush.message.util.JmsClient;
 import org.jboss.shrinkwrap.api.Archive;
@@ -70,6 +75,15 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .addClasses(AbstractJMSTest.class, JmsClient.class)
             .addClasses(DispatchToQueue.class, Dequeue.class)
             .addAsWebInfResource(new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/hornetq-jms.xml"));
+    }
+
+    @Override
+    public UnifiedPushArchive withMessageDrivenBeans() {
+        return addClasses(AbstractJMSMessageListener.class)
+                .addClasses(MessageHolderWithVariantsConsumer.class, MessageHolderWithVariantsProducer.class)
+                .addClasses(MessageHolderWithTokensConsumer.class, MessageHolderWithTokensProducer.class)
+                .addClasses(TriggerMetricCollectionConsumer.class)
+                .addAsWebInfResource(new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/jboss-ejb3.xml"), "jboss-ejb3.xml");
     }
 
     @Override
