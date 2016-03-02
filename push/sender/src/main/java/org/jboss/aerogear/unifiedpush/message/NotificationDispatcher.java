@@ -16,15 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.Collection;
-
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
@@ -35,6 +26,14 @@ import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Collection;
 
 /**
  * Receives a request for dispatching push notifications to specified devices from {@link TokenLoader}
@@ -63,6 +62,7 @@ public class NotificationDispatcher {
      * @param msg object containing details about the payload and the related device tokens
      */
     public void sendMessagesToPushNetwork(@Observes @Dequeue MessageHolderWithTokens msg) {
+        System.out.println("\n\nDA DA DA DA\n\n");
         final Variant variant = msg.getVariant();
         final UnifiedPushMessage message = msg.getUnifiedPushMessage();
         final Collection<String> deviceTokens = msg.getDeviceTokens();
@@ -107,6 +107,7 @@ public class NotificationDispatcher {
     private void updateStatusOfPushMessageInformation(final PushMessageInformation pushMessageInformation, final String variantID, final int receivers, final Boolean deliveryStatus, final String reason) {
         final VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
         variantMetricInformation.setPushMessageInformation(pushMessageInformation);
+        logger.severe(variantID);
         variantMetricInformation.setVariantID(variantID);
         variantMetricInformation.setReceivers(Long.valueOf(receivers));
         variantMetricInformation.setDeliveryStatus(deliveryStatus);

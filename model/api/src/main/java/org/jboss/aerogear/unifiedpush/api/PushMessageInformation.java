@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Metadata object that contains various informations around a submitted push message request
@@ -36,6 +37,8 @@ public class PushMessageInformation extends BaseModel {
     private String ipAddress;
     private String clientIdentifier;
 
+    private String pushMessageId = UUID.randomUUID().toString();
+
     private Date submitDate = new Date();
     private Long totalReceivers = 0L;
 
@@ -47,6 +50,18 @@ public class PushMessageInformation extends BaseModel {
     private Integer totalVariants = 0;
 
     private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
+
+    /**
+     * Internal Push Message-ID (or Push Job ID), globally used to track a push job, across different variants/push networks
+     * @return
+     */
+    public String getPushMessageId() {
+        return pushMessageId;
+    }
+
+    public void setPushMessageId(String pushMessageId) {
+        this.pushMessageId = pushMessageId;
+    }
 
     /**
      * The raw JSON payload of the push message request

@@ -16,13 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.jms.Queue;
-
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
@@ -31,6 +24,13 @@ import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.jms.Queue;
 
 /**
  * Receives metrics from {@link NotificationDispatcher} and updates the database.
@@ -74,7 +74,9 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
 
         pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
 
-        int loadedBatches = countLoadedBatches(variantID);
+        int loadedBatches = countLoadedBatches(variantID + pushMessageInformation.getPushMessageId());
+        logger.severe(variantID + pushMessageInformation.getPushMessageId());
+        logger.warning("nr of loaded batches: " + loadedBatches);
         variantMetricInformation.setTotalBatches(variantMetricInformation.getTotalBatches() + loadedBatches);
 
         boolean updatedExisting = false;
@@ -87,14 +89,16 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
             }
         }
 
-        if (!updatedExisting) {
+          if (!updatedExisting) {
             pushMessageInformation.addVariantInformations(variantMetricInformation);
         }
 
         metricsService.updatePushMessageInformation(pushMessageInformation);
 
+        logger.warning("Total Batches: " + variantMetricInformation.getTotalBatches() + " fpr push job: " + pushMessageInformation.getPushMessageId());
+
         if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
-            if (areAllBatchesLoaded(variantID)) {
+            if (areAllBatchesLoaded(variantID + pushMessageInformation.getPushMessageId())) {
                 pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
                 logger.fine(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
                 variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
@@ -108,8 +112,10 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
     }
 
     private int countLoadedBatches(String variantID) {
+        logger.severe("Asking for .................. " + variantID);
         int loadedBatches = 0;
         while (receiveInTransactionNoWait(batchLoadedQueue, "variantID", variantID) != null) {
+            logger.warning("Increase BATCHES................ for variant: " + variantID);
             loadedBatches += 1;
         }
         return loadedBatches;

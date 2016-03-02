@@ -16,12 +16,12 @@
  */
 package org.jboss.aerogear.unifiedpush.message.jms;
 
+import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
+import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
+
 import javax.annotation.Resource;
 import javax.enterprise.event.Observes;
 import javax.jms.Queue;
-
-import org.jboss.aerogear.unifiedpush.message.event.AllBatchesLoadedEvent;
-import org.jboss.aerogear.unifiedpush.message.event.BatchLoadedEvent;
 
 /**
  * A CDI-to-JMS bridge takes some selected CDI events and passes them to JMS messaging system so that they can be handled asynchronously.
@@ -39,6 +39,7 @@ public class CdiJmsBridge extends AbstractJMSMessageProducer {
     }
 
     public void queueMessage(@Observes @DispatchToQueue BatchLoadedEvent msg) {
+        System.out.println("queueMessage -> " +msg.getVariantID());
         sendTransacted(batchLoadedQueue, msg, "variantID", msg.getVariantID());
     }
 }

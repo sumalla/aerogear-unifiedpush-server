@@ -16,18 +16,6 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
@@ -43,6 +31,17 @@ import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
 import org.jboss.aerogear.unifiedpush.service.ClientInstallationService;
 import org.jboss.aerogear.unifiedpush.utils.AeroGearLogger;
+
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Receives a request for sending a push message to given variants from {@link NotificationRouter}.
@@ -121,30 +120,37 @@ public class TokenLoader {
                 for (int batchNumber = 0; batchNumber < configuration.batchesToLoad(); batchNumber++) {
                     Set<String> tokens = new TreeSet<String>();
                     for (int i = 0; i < configuration.batchSize() && tokenStream.next(); i++) {
+                        logger.warning("Adding one more token........");
                         lastTokenInBatch = tokenStream.get();
                         tokens.add(lastTokenInBatch);
                         tokensLoaded += 1;
                     }
                     if (tokens.size() > 0) {
                         dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, ++serialId));
-                        logger.fine(String.format("Loaded batch #%s for %s variant (%s)", serialId, variant.getType().getTypeName(), variant.getVariantID()));
-                        batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()));
+                        //logger.fine(String.format("Loaded batch #%s for %s variant (%s)", serialId, variant.getType().getTypeName(), variant.getVariantID()));
+                        logger.severe(String.format(">>Loaded batch #%s for %s variant (%s)", serialId, variant.getType().getTypeName(), variant.getVariantID()));
+                        //batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()));// + msg.getPushMessageInformation().getPushMessageId()));
+                        logger.severe("\n\nFire key -> " + variant.getVariantID() + msg.getPushMessageInformation().getPushMessageId());
+                        batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID() + msg.getPushMessageInformation().getPushMessageId()));
                     } else {
+                        logger.warning("EMPTY TOKEN SET!");
                         break;
                     }
                 }
                 // should we load next batch ?
                 if (tokensLoaded >= configuration.tokensToLoad()) {
-                    logger.fine(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                    logger.severe(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
+                    //logger.fine(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
-                    logger.fine(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
-                    allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()));
+                    logger.fine(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getPushMessageId()));
+                    allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID() +  msg.getPushMessageInformation().getPushMessageId()));
 
                     if (tokensLoaded == 0 && lastTokenFromPreviousBatch == null) {
                         // no tokens were loaded at all!
                         VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
                         variantMetricInformation.setPushMessageInformation(msg.getPushMessageInformation());
+                        logger.severe(variant.getVariantID());
                         variantMetricInformation.setVariantID(variant.getVariantID());
                         variantMetricInformation.setDeliveryStatus(Boolean.TRUE);
                         dispatchVariantMetricEvent.fire(variantMetricInformation);
