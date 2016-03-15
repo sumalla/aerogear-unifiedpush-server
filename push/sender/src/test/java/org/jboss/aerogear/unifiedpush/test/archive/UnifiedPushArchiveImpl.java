@@ -28,6 +28,7 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageListener;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageProducer;
+import org.jboss.aerogear.unifiedpush.message.jms.CdiJmsBridge;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
 import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
 import org.jboss.aerogear.unifiedpush.message.jms.MessageHolderWithTokensConsumer;
@@ -72,7 +73,7 @@ public class UnifiedPushArchiveImpl extends UnifiedPushArchiveBase {
             .addPackage(org.jboss.aerogear.unifiedpush.message.holder.AbstractMessageHolder.class.getPackage())
             .addPackage(org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException.class.getPackage())
             .addClasses(AbstractJMSMessageProducer.class, AbstractJMSMessageListener.class, AbstractJMSMessageConsumer.class)
-            .addClasses(AbstractJMSTest.class, JmsClient.class)
+            .addClasses(AbstractJMSTest.class, JmsClient.class, CdiJmsBridge.class)
             .addClasses(DispatchToQueue.class, Dequeue.class)
             .addAsWebInfResource(new File("../../servers/ups-wildfly/src/main/webapp/WEB-INF/hornetq-jms.xml"));
     }
