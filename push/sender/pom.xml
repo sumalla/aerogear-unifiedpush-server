@@ -128,7 +128,7 @@
         <dependency>
             <groupId>org.wildfly.extras.creaper</groupId>
             <artifactId>creaper-core</artifactId>
-            <version>0.9.2</version>
+            <version>1.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jboss.as</groupId>
@@ -144,7 +144,7 @@
         <dependency>
             <groupId>org.wildfly.extras.creaper</groupId>
             <artifactId>creaper-commands</artifactId>
-            <version>0.9.2</version>
+            <version>1.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.wildfly</groupId>
