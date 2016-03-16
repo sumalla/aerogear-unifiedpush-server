@@ -172,20 +172,25 @@ public class GCMPushNotificationSender implements PushNotificationSender {
             String canonicalRegId = result.getCanonicalRegistrationId();
             if (canonicalRegId != null) {
                 // same device has more than one registration id: update it
-              
-                // find the installation and change its token to new canonical id
-                Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID,registrationIDs.get(i));
-                installation.setDeviceToken(canonicalRegId);
-              
-                //update installation with the new token
-                logger.info(String.format("Based on returned canonical id from GCM, updating Android installations with registration id [%s] with new token [%s] ", registrationIDs.get(i), canonicalRegId));
-                clientInstallationService.updateInstallation(installation);
-              
-                //if the result contains a canonical id, there is no need to remove the current inactive token from data store
-                
-            }
-            else
-            {
+
+                // let's see if the canonical id is already in our system:
+                Installation installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID, canonicalRegId);
+
+                // there is not a device on this variant with the given canonical id
+                if (installation == null) {
+
+                    // find the installation and change its token to new canonical id
+                    installation = clientInstallationService.findInstallationForVariantByDeviceToken(variantID,registrationIDs.get(i));
+                    installation.setDeviceToken(canonicalRegId);
+
+                    //update installation with the new token
+                    logger.info(String.format("Based on returned canonical id from GCM, updating Android installations with registration id [%s] with new token [%s] ", registrationIDs.get(i), canonicalRegId));
+                    clientInstallationService.updateInstallation(installation);
+
+                    //if the result contains a canonical id, there is no need to remove the current inactive token from data store
+                }
+
+            } else {
                 // is there any 'interesting' error code, which requires a clean up of the registration IDs
                 if (GCM_ERROR_CODES.contains(errorCodeName)) {
     
