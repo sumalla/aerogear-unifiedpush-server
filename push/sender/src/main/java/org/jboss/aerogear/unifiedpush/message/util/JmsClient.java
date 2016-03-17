@@ -16,10 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.message.util;
 
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -32,8 +29,10 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
-
-import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException;
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Utility class for sending and receiving JMS messages
@@ -49,6 +48,9 @@ public class JmsClient {
 
     /**
      * Creates {@link JmsSender} utility that allows to specify how should be message sent and into which destination
+     *
+     * @param message the message to be send out
+     * @return the new sender object
      */
     public JmsSender send(Serializable message) {
         return new JmsSender(message);
@@ -56,6 +58,8 @@ public class JmsClient {
 
     /**
      * Creates {@link JmsReceiver} utility that allows to specify how should be message received and from which destination
+     *
+     * @return the new receiver object
      */
     public JmsReceiver receive() {
         return new JmsReceiver();
@@ -79,6 +83,8 @@ public class JmsClient {
 
         /**
          * Receives the message in transaction (i.e. use JmsXA connection factory).
+         *
+         * @return this receiver object
          */
         public JmsReceiver inTransaction() {
             this.transacted = true;
@@ -87,8 +93,11 @@ public class JmsClient {
 
         /**
          * Specifies a selector used to query messages from a destination.
-         *
          * The selector can be formatted with arguments as in {@link String#format(String, Object...)}.
+         *
+         * @param selector specifies to query messages from a destination.
+         * @param args argument for the selector
+         * @return this receiver object
          *
          * @see String#format(String, Object...)
          */
@@ -99,6 +108,8 @@ public class JmsClient {
 
         /**
          * Don't block and returns the message what is in the queue, if there is none queued, then returns null immediately.
+         *
+         * @return this receiver object
          */
         public JmsReceiver noWait() {
             this.wait = new NoWait();
@@ -107,6 +118,9 @@ public class JmsClient {
 
         /**
          * Waits specific number of milliseconds for a message to eventually appear in the queue, or returns null if there was no message queued in given interval.
+         *
+         * @param timeout wait until
+         * @return this receiver object
          */
         public JmsReceiver withTimeout(long timeout) {
             this.wait = new WaitSpecificTime(timeout);
@@ -115,6 +129,9 @@ public class JmsClient {
 
         /**
          * Sets the message acknowledgement mode.
+         *
+         * @param acknowledgeMode JMS acknowledge mode as in {@link Session}
+         * @return this receiver object
          */
         public JmsReceiver withAcknowledgeMode(int acknowledgeMode) {
             this.acknowledgeMode = acknowledgeMode;
@@ -123,6 +140,8 @@ public class JmsClient {
 
         /**
          * Won't close the connection automatically upon completion, allowing to reuse given connection.
+         *
+         * @return this receiver object
          */
         public JmsReceiver noAutoClose() {
             this.autoClose = false;
@@ -142,6 +161,9 @@ public class JmsClient {
 
         /**
          * Receives message from the given destination.
+         *
+         * @param destination where to receive from
+         * @return dequeued {@link ObjectMessage}
          */
         public ObjectMessage from(Destination destination) {
             try {
@@ -199,6 +221,8 @@ public class JmsClient {
 
         /**
          * Send the message in transaction (i.e. use JmsXA connection factory).
+         *
+         * @return this sender object
          */
         public JmsSender inTransaction() {
             this.transacted = true;
@@ -207,6 +231,10 @@ public class JmsClient {
 
         /**
          * Sets the property that can be later used to query message by selector.
+         *
+         * @param name of property
+         * @param value of property
+         * @return this sender object
          */
         public JmsSender withProperty(String name, String value) {
             if (value == null) {
@@ -218,6 +246,10 @@ public class JmsClient {
 
         /**
          * Sets the property that can be later used to query message by selector.
+         *
+         * @param name of property
+         * @param value of property
+         * @return this sender object
          */
         public JmsSender withProperty(String name, Long value) {
             if (value == null) {
@@ -232,6 +264,9 @@ public class JmsClient {
          *
          * Any other try to sent another message with exactly same ID won't result into queing the message,
          * no matter what payload the another message has.
+         *
+         * @param duplicateDetectionId protection of ID for duplicate msgs
+         * @return this sender object
          */
         public JmsSender withDuplicateDetectionId(String duplicateDetectionId) {
             if (duplicateDetectionId == null) {
@@ -243,6 +278,9 @@ public class JmsClient {
 
         /**
          * The message sent with given ID will be scheduled to be delivered after specified number of miliseconds.
+         *
+         * @param delayMs the delay in milliseconds
+         * @return this sender object
          */
         public JmsSender withDelayedDelivery(Long delayMs) {
             if (delayMs == null) {
@@ -254,6 +292,8 @@ public class JmsClient {
 
         /**
          * Sends the message to the destination.
+         *
+         * @param destination where to send
          */
         public void to(Destination destination) {
             Connection connection = null;
