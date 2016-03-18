@@ -1,8 +1,8 @@
 connect
 batch
 
-#/subsystem=logging/logger=org.jboss.aerogear.unifiedpush:remove()
-#/subsystem=logging/console-handler=AEROGEAR:remove()
+/subsystem=logging/logger=org.jboss.aerogear.unifiedpush:remove()
+/subsystem=logging/console-handler=AEROGEAR:remove()
 
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.GCMPushMessageQueue:remove()
 /subsystem=messaging-activemq/server=default/address-setting=jms.queue.TriggerMetricCollectionQueue:remove()
