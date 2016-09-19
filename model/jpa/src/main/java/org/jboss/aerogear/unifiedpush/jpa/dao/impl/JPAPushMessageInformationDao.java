@@ -83,12 +83,26 @@ public class JPAPushMessageInformationDao extends JPABaseDao<PushMessageInformat
 
         return new PageResult<PushMessageInformation, MessageMetrics>(pushMessageInformationList, messageMetrics);
     }
+    /**
+     * Checks if the list is empty, and not null
+     */
+    private boolean isListEmpty(List list) {
+        return (list != null && !list.isEmpty());
+    }
 
     @Override
     public long getNumberOfPushMessagesForLoginName(String loginName) {
-        return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId " +
-                "IN (select p.pushApplicationID from PushApplication p where p.developer = :developer)", Long.class)
-                .setParameter("developer", loginName).getSingleResult();
+
+        final List<String> pushAppIDs = createQuery("select p.pushApplicationID from PushApplication p where p.developer = :developer", String.class)
+                .setParameter("developer", loginName).getResultList();
+
+        if (isListEmpty(pushAppIDs)) {
+
+            return createQuery("select count(pmi) from PushMessageInformation pmi where pmi.pushApplicationId IN :pushAppIDs", Long.class)
+                    .setParameter("pushAppIDs", pushAppIDs).getSingleResult();
+        }
+
+        return 0;
     }
 
     @Override
