@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,7 +47,9 @@ public class PushMessageInformation extends BaseModel {
     private Integer servedVariants = 0;
     private Integer totalVariants = 0;
 
-    private Set<VariantMetricInformation> variantInformations = new HashSet<VariantMetricInformation>();
+    private Map<String, Set<VariantMetricInformationBatch>> variantBatchInfo;
+
+    private Set<VariantMetricInformation> variantInformations = new HashSet();
 
     /**
      * The raw JSON payload of the push message request

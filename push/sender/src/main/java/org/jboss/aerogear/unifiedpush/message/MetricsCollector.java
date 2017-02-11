@@ -18,10 +18,11 @@ package org.jboss.aerogear.unifiedpush.message;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformationBatch;
 import org.jboss.aerogear.unifiedpush.message.event.PushMessageCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.event.VariantCompletedEvent;
 import org.jboss.aerogear.unifiedpush.message.jms.AbstractJMSMessageConsumer;
-import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
+import org.jboss.aerogear.unifiedpush.message.jms.DequeueVariantMetricBatch;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,53 +66,76 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
      * Additionally when a variant was completed and there are no more variants to be completed for this variant,
      * the {@link PushMessageCompletedEvent} CDI event is fired.
      *
-     * @param variantMetricInformation the variant metrics info object
+     * @param variantMetricInformationBatch the variant metrics info object
      */
-    public void collectMetrics(@Observes @Dequeue VariantMetricInformation variantMetricInformation) {
-        PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(variantMetricInformation.getPushMessageInformation().getId());
-        metricsService.lock(pushMessageInformation);
+    public void collectMetrics(@Observes @DequeueVariantMetricBatch VariantMetricInformationBatch variantMetricInformationBatch) {
+        logger.error("============================================");
+        logger.error("here we go: " + variantMetricInformationBatch);
+        logger.error("============================================");
 
-        final String variantID = variantMetricInformation.getVariantID();
+//        PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(variantMetricInformationBatch.getPushMessageInformationID());
+        metricsService.storeBatch(variantMetricInformationBatch);
 
-        pushMessageInformation.setTotalReceivers(pushMessageInformation.getTotalReceivers() + variantMetricInformation.getReceivers());
+//        PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(variantMetricInformationBatch.getPushMessageInformationID());
+
+//        metricsService.lock(pushMessageInformation);
+
+
+        final String variantID = variantMetricInformationBatch.getVariantID();
+        final String pushMessageInformationID = variantMetricInformationBatch.getPushMessageInformationID();
 
         // AGPUSH-1585:
         // using a combined key of variant ID and PushMessageInformation ID, to not limit different push requests on the queue just to the variant
         // TODO: improve name and/or implementation if this.
-        final String variantPushMessageID = variantID + ":" + pushMessageInformation.getId();
+        final String variantPushMessageID = variantID + ":" + pushMessageInformationID;
 
-        int loadedBatches = countLoadedBatches(variantPushMessageID);
-        variantMetricInformation.setTotalBatches(variantMetricInformation.getTotalBatches() + loadedBatches);
+//        int loadedBatches = countLoadedBatches(variantPushMessageID);
+//        logger.warn("Loaded batches................."  +  loadedBatches);
 
-        boolean updatedExisting = false;
-        for (VariantMetricInformation existingMetric : pushMessageInformation.getVariantInformations()) {
-            if (variantMetricInformation.getVariantID().equals(existingMetric.getVariantID())) {
-                updatedExisting = true;
-                updateExistingMetric(existingMetric, variantMetricInformation);
-                variantMetricInformation = existingMetric;
-                break;
-            }
+
+
+        if (areAllBatchesLoaded(variantPushMessageID)) {
+
+            logger.error("ALL LOAD FOR -> " + variantPushMessageID);
         }
 
-        if (!updatedExisting) {
-            pushMessageInformation.addVariantInformations(variantMetricInformation);
-        }
 
-        metricsService.updatePushMessageInformation(pushMessageInformation);
+//        logger.error("ALL LOADED ? " + areAllBatchesLoaded(variantPushMessageID));
+//        variantMetricInformation.setTotalBatches(variantMetricInformation.getTotalBatches() + loadedBatches);
 
-        if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
 
-            if (areAllBatchesLoaded(variantPushMessageID)) {
-                pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
-                logger.debug(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
-                variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
+        // NOT NEEDED HJERE  = we jiust insert a batch;
+        //  agrregation done else whjere....
+        //
 
-                if (areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants())) {
-                    logger.debug(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
-                    pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
-                }
-            }
-        }
+//        boolean updatedExisting = false;
+//        for (VariantMetricInformation existingMetric : pushMessageInformation.getVariantInformations()) {
+//            if (variantMetricInformation.getVariantID().equals(existingMetric.getVariantID())) {
+//                updatedExisting = true;
+//                updateExistingMetric(existingMetric, variantMetricInformation);
+//   //             variantMetricInformation = existingMetric;
+//                break;
+//            }
+//        }
+//        if (!updatedExisting) {
+//            pushMessageInformation.addVariantInformations(variantMetricInformation);
+//        }
+
+//        metricsService.updatePushMessageInformation(pushMessageInformation);
+
+//        if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
+//
+//            if (areAllBatchesLoaded(variantPushMessageID)) {
+//                pushMessageInformation.setServedVariants(pushMessageInformation.getServedVariants() + 1);
+//                logger.error(String.format("All batches for variant %s were processed", variantMetricInformation.getVariantID()));
+//                variantCompleted.fire(new VariantCompletedEvent(pushMessageInformation.getId(), variantMetricInformation.getVariantID()));
+//
+//                if (areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants())) {
+//                    logger.error(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
+//                    pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
+//                }
+//            }
+//        }
     }
 
     private int countLoadedBatches(String variantID) {

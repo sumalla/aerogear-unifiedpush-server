@@ -23,11 +23,15 @@ import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformationBatch;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationBatchDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Service class to handle different aspects of the Push Message Information metadata for the "Push Message History" view
@@ -35,6 +39,8 @@ import org.jboss.aerogear.unifiedpush.utils.DateUtils;
  */
 @Stateless
 public class PushMessageMetricsService {
+
+    private final Logger logger = LoggerFactory.getLogger(PushMessageMetricsService.class);
 
     // that's what we currently use as the maximum days the message information objects are stored
     // before wiped out automatically by the DeleteOldPushMessageInformationScheduler
@@ -45,6 +51,13 @@ public class PushMessageMetricsService {
 
     @Inject
     private VariantMetricInformationDao variantMetricInformationDao;
+
+    @Inject
+    private VariantMetricInformationBatchDao variantMetricInformationBatchDao;
+
+    public void storeBatch(VariantMetricInformationBatch batch) {
+        variantMetricInformationBatchDao.create(batch);
+    }
 
     /**
      * Starts the capturing of metadata around a push message request.
@@ -72,15 +85,6 @@ public class PushMessageMetricsService {
         return information;
     }
 
-
-    /**
-     * Delegates a database update for the given {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} object.
-     *
-     * @param pushMessageInformation the push message info object
-     */
-    public void updatePushMessageInformation(PushMessageInformation pushMessageInformation) {
-        pushMessageInformationDao.update(pushMessageInformation);
-    }
 
     /**
      * Locks the push message information for updates so that there will be no updates concurrently
@@ -133,6 +137,15 @@ public class PushMessageMetricsService {
     public void deleteOutdatedPushInformationData() {
         final Date historyDate = DateUtils.calculatePastDate(DAYS_OF_MAX_OLDEST_INFO_MSG);
         pushMessageInformationDao.deletePushInformationOlderThan(historyDate);
+    }
+
+    /**
+     * Delegates a database update for the given {@link org.jboss.aerogear.unifiedpush.api.PushMessageInformation} object.
+     *
+     * @param pushMessageInformation the push message info object
+     */
+    public void updatePushMessageInformation(PushMessageInformation pushMessageInformation) {
+        pushMessageInformationDao.update(pushMessageInformation);
     }
 
     public PushMessageInformation getPushMessageInformation(String id) {

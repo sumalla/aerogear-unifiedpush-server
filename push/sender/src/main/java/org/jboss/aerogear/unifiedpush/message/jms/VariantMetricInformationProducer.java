@@ -34,7 +34,11 @@ public class VariantMetricInformationProducer extends AbstractJMSMessageProducer
     @Resource(mappedName = "java:/queue/MetricsQueue")
     private Queue tokenBatchQueue;
 
-    public void queueMessageVariantForProcessing(@Observes @DispatchToQueue VariantMetricInformation msg) {
+    public void queueVariantMetricInformationFromPushNetwork(@Observes @DispatchFromPushNetworkToQueue VariantMetricInformation msg) {
+        sendNonTransacted(tokenBatchQueue, msg);
+    }
+
+    public void queueNoTokenFoundForVariant(@Observes @DispatchToQueue VariantMetricInformation msg) {
         sendNonTransacted(tokenBatchQueue, msg);
     }
 

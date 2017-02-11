@@ -177,7 +177,7 @@ public class TokenLoader {
 
                     if (tokens.size() > 0) {
                         dispatchTokensEvent.fire(new MessageHolderWithTokens(msg.getPushMessageInformation(), message, variant, tokens, serialId));
-                        logger.info(String.format("Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
+                        logger.info(String.format("BatchLoaded:::  Loaded batch #%s, containing %d tokens, for %s variant (%s)", serialId, tokens.size() ,variant.getType().getTypeName(), variant.getVariantID()));
 
                         // using combined key of variant and PMI (AGPUSH-1585):
                         batchLoaded.fire(new BatchLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
@@ -191,7 +191,7 @@ public class TokenLoader {
                     logger.debug(String.format("Ending token loading transaction for %s variant (%s)", variant.getType().getTypeName(), variant.getVariantID()));
                     nextBatchEvent.fire(new MessageHolderWithVariants(msg.getPushMessageInformation(), message, msg.getVariantType(), variants, serialId, lastTokenInBatch));
                 } else {
-                    logger.debug(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
+                    logger.error(String.format("All batches for %s variant were loaded (%s)", variant.getType().getTypeName(), msg.getPushMessageInformation().getId()));
 
                     // using combined key of variant and PMI (AGPUSH-1585):
                     allBatchesLoaded.fire(new AllBatchesLoadedEvent(variant.getVariantID()+":"+msg.getPushMessageInformation().getId()));
@@ -204,6 +204,9 @@ public class TokenLoader {
                             logger.warn("Check your push query: Not a single token was loaded from the DB!");
                         }
 
+                        logger.error("SOME WEIRD FIRE FOR VMI......");
+
+                        /// NO TOKEN EVENT
                         VariantMetricInformation variantMetricInformation = new VariantMetricInformation();
                         variantMetricInformation.setPushMessageInformation(msg.getPushMessageInformation());
                         variantMetricInformation.setVariantID(variant.getVariantID());

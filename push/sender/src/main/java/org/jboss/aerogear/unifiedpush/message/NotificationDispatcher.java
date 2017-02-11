@@ -21,7 +21,7 @@ import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithTokens;
 import org.jboss.aerogear.unifiedpush.message.jms.Dequeue;
-import org.jboss.aerogear.unifiedpush.message.jms.DispatchToQueue;
+import org.jboss.aerogear.unifiedpush.message.jms.DispatchFromPushNetworkToQueue;
 import org.jboss.aerogear.unifiedpush.message.sender.NotificationSenderCallback;
 import org.jboss.aerogear.unifiedpush.message.sender.PushNotificationSender;
 import org.jboss.aerogear.unifiedpush.message.sender.SenderTypeLiteral;
@@ -52,7 +52,7 @@ public class NotificationDispatcher {
     private Instance<PushNotificationSender> senders;
 
     @Inject
-    @DispatchToQueue
+    @DispatchFromPushNetworkToQueue
     private Event<VariantMetricInformation> dispatchVariantMetricEvent;
 
     /**

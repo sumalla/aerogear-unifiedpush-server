@@ -24,6 +24,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantMetricInformationBatch;
 
 /**
  * Consumes {@link VariantMetricInformation} from queue and pass them as a CDI event for further processing.
@@ -38,11 +39,11 @@ import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 public class VariantMetricInformationConsumer extends AbstractJMSMessageListener<VariantMetricInformation> {
 
     @Inject
-    @Dequeue
-    private Event<VariantMetricInformation> dequeueEvent;
+    @DequeueVariantMetricBatch
+    private Event<VariantMetricInformationBatch> dequeueEvent;
 
     @Override
     public void onMessage(VariantMetricInformation message) {
-        dequeueEvent.fire(message);
+        dequeueEvent.fire(new VariantMetricInformationBatch(message));
     }
 }
