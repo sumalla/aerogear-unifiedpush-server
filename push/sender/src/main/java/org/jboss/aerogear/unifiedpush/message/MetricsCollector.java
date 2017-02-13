@@ -68,8 +68,7 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
      * @param variantMetricInformation the variant metrics info object
      */
     public void collectMetrics(@Observes @Dequeue VariantMetricInformation variantMetricInformation) {
-        PushMessageInformation pushMessageInformation = metricsService.getPushMessageInformation(variantMetricInformation.getPushMessageInformation().getId());
-        metricsService.lock(pushMessageInformation);
+        PushMessageInformation pushMessageInformation = metricsService.lock(variantMetricInformation.getPushMessageInformation()) ; //getPushMessageInformation(variantMetricInformation.getPushMessageInformation().getId());
 
         final String variantID = variantMetricInformation.getVariantID();
 
@@ -97,7 +96,7 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
             pushMessageInformation.addVariantInformations(variantMetricInformation);
         }
 
-        metricsService.updatePushMessageInformation(pushMessageInformation);
+        metricsService.lockedUpdatePushMessageInformation(pushMessageInformation);
 
         if (areIntegersEqual(variantMetricInformation.getTotalBatches(), variantMetricInformation.getServedBatches())) {
 
