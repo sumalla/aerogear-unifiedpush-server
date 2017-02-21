@@ -25,8 +25,15 @@ public class PushMessageCompletedEvent {
 
     private String pushMessageInformationId;
 
-    public PushMessageCompletedEvent(String pushMessageInformationId) {
+    private String pushApplicationId;
+
+    public PushMessageCompletedEvent(String pushApplicationId, String pushMessageInformationId) {
         this.pushMessageInformationId = pushMessageInformationId;
+        this.pushApplicationId = pushApplicationId;
+    }
+
+    public String getPushApplicationId() {
+        return pushApplicationId;
     }
 
     public String getPushMessageInformationId() {

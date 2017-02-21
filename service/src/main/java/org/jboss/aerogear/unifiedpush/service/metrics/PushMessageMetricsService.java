@@ -17,6 +17,7 @@
 package org.jboss.aerogear.unifiedpush.service.metrics;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -96,6 +97,14 @@ public class PushMessageMetricsService {
      */
     public PageResult<PushMessageInformation, MessageMetrics> findAllForPushApplication(String pushApplicationID, String search, boolean sorting, Integer page, Integer pageSize) {
         return pushMessageInformationDao.findAllForPushApplication(pushApplicationID, search, sorting, page, pageSize);
+    }
+
+    public List<PushMessageInformation> findAllForPushApplication(String pushApplicationId, boolean ascending) {
+        return pushMessageInformationDao.findAllForPushApplication(pushApplicationId, ascending);
+    }
+
+    public List<PushMessageInformation> findAllForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
+        return pushMessageInformationDao.findAllForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
     }
 
     /**
