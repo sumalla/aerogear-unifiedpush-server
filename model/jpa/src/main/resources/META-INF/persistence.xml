@@ -23,14 +23,24 @@
     <jta-data-source>java:jboss/datasources/UnifiedPushDS</jta-data-source>
 
     <mapping-file>META-INF/orm.xml</mapping-file>
-
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
     <properties>
+      <property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/>
       <property name="hibernate.dialect_resolvers" value="org.jboss.aerogear.unifiedpush.jpa.MysqlDialectResolver"/>
       <property name="hibernate.hbm2ddl.auto" value="${ups.ddl_value}"/>
       <property name="hibernate.show_sql" value="false"/>
       <property name="hibernate.format_sql" value="true"/>
       <property name="hibernate.transaction.flush_before_completion" value="true"/>
       <property name="hibernate.id.new_generator_mappings" value="true"/>
+
+      <!--Cache configuration-->
+      <property name="hibernate.cache.region.factory_class"
+                value="org.jboss.as.jpa.hibernate4.infinispan.InfinispanRegionFactory"/>
+      <property name="hibernate.cache.infinispan.cachemanager"
+                value="java:jboss/infinispan/container/hibernate"/>
+      <property name="hibernate.transaction.manager_lookup_class"
+                value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
+      <property name="hibernate.cache.use_second_level_cache" value="false"/>
     </properties>
   </persistence-unit>
 
