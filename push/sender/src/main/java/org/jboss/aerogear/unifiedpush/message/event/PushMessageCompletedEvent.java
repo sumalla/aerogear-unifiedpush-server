@@ -23,10 +23,17 @@ import org.jboss.aerogear.unifiedpush.message.MetricsCollector;
  */
 public class PushMessageCompletedEvent {
 
+    private String pushApplicationId;
     private String pushMessageInformationId;
 
-    public PushMessageCompletedEvent(String pushMessageInformationId) {
+    public PushMessageCompletedEvent(String pushApplicationId, String pushMessageInformationId) {
+        this.pushApplicationId = pushApplicationId;
         this.pushMessageInformationId = pushMessageInformationId;
+    }
+
+
+    public String getPushApplicationId() {
+        return pushApplicationId;
     }
 
     public String getPushMessageInformationId() {

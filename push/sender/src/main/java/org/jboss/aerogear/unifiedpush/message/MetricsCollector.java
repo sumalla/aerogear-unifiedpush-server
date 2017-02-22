@@ -102,7 +102,7 @@ public class MetricsCollector extends AbstractJMSMessageConsumer {
 
                 if (areIntegersEqual(pushMessageInformation.getServedVariants(), pushMessageInformation.getTotalVariants())) {
                     logger.debug(String.format("All batches for application %s were processed", pushMessageInformation.getId()));
-                    pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getId()));
+                    pushMessageCompleted.fire(new PushMessageCompletedEvent(pushMessageInformation.getPushApplicationId(), pushMessageInformation.getId()));
                 }
             }
         }

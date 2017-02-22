@@ -18,8 +18,7 @@ package org.jboss.aerogear.unifiedpush.rest.metrics;
 
 import static org.jboss.aerogear.unifiedpush.rest.util.HttpRequestUtil.extractSortingQueryParamValue;
 import com.qmino.miredot.annotations.ReturnType;
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
+import org.jboss.aerogear.unifiedpush.api.PushMetricsAggregator;
 import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 import javax.inject.Inject;
@@ -30,11 +29,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
-import org.jboss.aerogear.unifiedpush.dao.PageResult;
-import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
-import org.jboss.aerogear.unifiedpush.service.metrics.PushMessageMetricsService;
 
 @Path("/metrics/messages")
 public class PushMetricsEndpoint {
@@ -52,7 +46,7 @@ public class PushMetricsEndpoint {
      * @param pageSize  number of items per page
      * @param sorting   sorting order: {@code asc} (default) or {@code desc}
      * @param search    search query
-     * @return          list of {@link PushMessageInformation}s
+     * @return          list of PushMessageInformation objectss
      *
      * @responseheader total            Total count of items
      * @responseheader receivers        Receivers
@@ -81,13 +75,16 @@ public class PushMetricsEndpoint {
             return Response.status(Response.Status.NOT_FOUND).entity("Could not find requested information").build();
         }
 
-        PageResult<PushMessageInformation, MessageMetrics> pageResult =
-                metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize);
+        PushMetricsAggregator pushMetricsAggregator = metricsService.findAllForPushApplication(id);
+        if (pushMetricsAggregator == null) {
+            // dummy...
+            pushMetricsAggregator = new PushMetricsAggregator();
+        }
 
-        return Response.ok(pageResult.getResultList())
-                .header("total", pageResult.getAggregate().getCount())
-                .header("receivers", pageResult.getAggregate().getReceivers())
-                .header("appOpenedCounter", pageResult.getAggregate().getAppOpenedCounter())
+        return Response.ok(metricsService.findAllForPushApplication(id, search, extractSortingQueryParamValue(sorting), page, pageSize))
+                .header("total", pushMetricsAggregator.getCount())
+                .header("receivers", pushMetricsAggregator.getReceivers())
+                .header("appOpenedCounter", pushMetricsAggregator.getAppOpenedCounter())
                 .build();
     }
 

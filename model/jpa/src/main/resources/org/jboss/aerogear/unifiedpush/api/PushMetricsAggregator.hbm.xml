@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="org.jboss.aerogear.unifiedpush.api.PushMetricsAggregator" table="push_metrics_aggregator">
+        <id name="id" type="java.lang.String">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="receivers" type="long" index="receivers_idx">
+            <column name="receivers" />
+        </property>
+        <property name="appOpenedCounter" type="long" index="app_opened_counter_idx">
+            <column name="app_opened_counter" />
+        </property>
+        <property name="count" type="long" index="app_opened_counter_idx">
+            <column name="count" />
+        </property>
+        <property name="pushApplicationID" type="java.lang.String" index="push_application_id_idx">
+            <column name="push_application_id" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -24,6 +24,7 @@ import org.apache.openejb.testing.Module;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPACategoryDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAInstallationDao;
+import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushMetricsAggregatorDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAPushApplicationDao;
 import org.jboss.aerogear.unifiedpush.jpa.dao.impl.JPAVariantMetricInformationDao;
@@ -113,6 +114,7 @@ public abstract class AbstractBaseServiceTest {
     @Module
     public Beans getBeans() {
         final Beans beans = new Beans();
+        beans.addManagedClass(JPAPushMetricsAggregatorDao.class);
         beans.addManagedClass(ClientInstallationServiceImpl.class);
         beans.addManagedClass(JPAPushMessageInformationDao.class);
         beans.addManagedClass(JPAInstallationDao.class);

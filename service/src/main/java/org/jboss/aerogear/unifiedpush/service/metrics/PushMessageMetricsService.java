@@ -22,9 +22,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.jboss.aerogear.unifiedpush.api.PushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.PushMetricsAggregator;
 import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.PushMetricsAggregatorDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
 import org.jboss.aerogear.unifiedpush.utils.DateUtils;
@@ -45,6 +47,42 @@ public class PushMessageMetricsService {
 
     @Inject
     private VariantMetricInformationDao variantMetricInformationDao;
+
+    @Inject
+    private PushMetricsAggregatorDao pushMetricsAggregatorDao;
+
+
+//    public PushMetricsAggregator readOrGenerateMetricsForPushApplication(String pushAppID) {
+//        PushMetricsAggregator pushMetricsAggregator = findAllForPushApplication(pushAppID);
+//
+//        if (pushMetricsAggregator == null) {
+//
+//            // takes some time...
+//            MessageMetrics result = findMessageMetricsForPushApplicationByParams(pushAppID, null, Boolean.FALSE, null, null);
+//
+//            pushMetricsAggregator = new PushMetricsAggregator();
+//            pushMetricsAggregator.setPushApplicationID(pushAppID);
+//            pushMetricsAggregator.setAppOpenedCounter(result.getAppOpenedCounter());
+//            pushMetricsAggregator.setReceivers(result.getReceivers());
+//            pushMetricsAggregator.setCount(result.getCount());
+//
+//            // ship it
+//            addPushMetricsAggregator(pushMetricsAggregator);
+//        }
+//        return pushMetricsAggregator;
+//    }
+//
+    public PushMetricsAggregator findAllForPushApplication(String pushApplicationId) {
+        return pushMetricsAggregatorDao.findAllForPushApplication(pushApplicationId);
+    }
+
+    public void addPushMetricsAggregator(PushMetricsAggregator pushMetricsAggregator) {
+        pushMetricsAggregatorDao.create(pushMetricsAggregator);
+    }
+
+    public MessageMetrics findMessageMetricsForPushApplicationByParams(String pushApplicationId, String search, boolean ascending, Integer page, Integer pageSize) {
+        return pushMessageInformationDao.findMessageMetricsForPushApplicationByParams(pushApplicationId, search, ascending, page, pageSize);
+    }
 
     /**
      * Starts the capturing of metadata around a push message request.

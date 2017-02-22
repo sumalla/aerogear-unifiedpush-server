@@ -22,6 +22,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
+import org.jboss.aerogear.unifiedpush.dao.PushMetricsAggregatorDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 
@@ -29,12 +30,18 @@ import org.jboss.aerogear.unifiedpush.service.GenericVariantService;
 public class MockProviders {
 
     private PushMessageInformationDao pushMessageInformationDao = mock(PushMessageInformationDao.class);
+    private PushMetricsAggregatorDao pushMetricsAggregatorDao = mock(PushMetricsAggregatorDao.class);
     private GenericVariantService genericVariantService = mock(GenericVariantService.class);
     private VariantMetricInformationDao variantMetricInformationDao = mock(VariantMetricInformationDao.class);
 
     @Produces
     public PushMessageInformationDao getPushMessageInformationDao() {
         return pushMessageInformationDao;
+    }
+
+    @Produces
+    public PushMetricsAggregatorDao getPushMetricsAggregatorDao() {
+        return pushMetricsAggregatorDao;
     }
 
     @Produces
