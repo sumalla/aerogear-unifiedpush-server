@@ -41,7 +41,6 @@
       <property name="hibernate.transaction.manager_lookup_class"
                 value="org.hibernate.transaction.JBossTransactionManagerLookup"/>
       <property name="hibernate.cache.use_second_level_cache" value="true"/>
-      <property name="hibernate.cache.use_minimal_puts" value="true" />
     </properties>
   </persistence-unit>
 
