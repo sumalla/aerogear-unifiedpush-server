@@ -66,7 +66,6 @@ public class JmsClient {
      */
     public class JmsReceiver {
 
-        private boolean transacted = false;
         private String selector = null;
         private Wait wait = new WaitIndefinitely();
         private int acknowledgeMode = Session.AUTO_ACKNOWLEDGE;
@@ -75,14 +74,6 @@ public class JmsClient {
         private Connection connection;
 
         public JmsReceiver() {
-        }
-
-        /**
-         * Receives the message in transaction (i.e. use JmsXA connection factory).
-         */
-        public JmsReceiver inTransaction() {
-            this.transacted = true;
-            return this;
         }
 
         /**
@@ -145,12 +136,8 @@ public class JmsClient {
          */
         public ObjectMessage from(Destination destination) {
             try {
-                if (transacted) {
-                    connection = xaConnectionFactory.createConnection();
-                } else {
-                    connection = connectionFactory.createConnection();
-                }
-                Session session = connection.createSession(transacted, acknowledgeMode);
+                connection = connectionFactory.createConnection();
+                Session session = connection.createSession(false, acknowledgeMode);
                 MessageConsumer messageConsumer;
                 if (selector != null) {
                     messageConsumer = session.createConsumer(destination, selector);
@@ -189,20 +176,10 @@ public class JmsClient {
     public class JmsSender {
 
         private Serializable message;
-        private boolean transacted = false;
         private Map<String, String> properties = new LinkedHashMap<String, String>();
-        private int autoAcknowledgeMode = Session.AUTO_ACKNOWLEDGE;
 
         public JmsSender(Serializable message) {
             this.message = message;
-        }
-
-        /**
-         * Send the message in transaction (i.e. use JmsXA connection factory).
-         */
-        public JmsSender inTransaction() {
-            this.transacted = true;
-            return this;
         }
 
         /**
@@ -230,12 +207,8 @@ public class JmsClient {
         public void to(Destination destination) {
             Connection connection = null;
             try {
-                if (transacted) {
-                    connection = xaConnectionFactory.createConnection();
-                } else {
-                    connection = connectionFactory.createConnection();
-                }
-                Session session = connection.createSession(transacted, autoAcknowledgeMode);
+                connection = connectionFactory.createConnection();
+                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 MessageProducer messageProducer = session.createProducer(destination);
                 connection.start();
                 ObjectMessage objectMessage = session.createObjectMessage(message);
