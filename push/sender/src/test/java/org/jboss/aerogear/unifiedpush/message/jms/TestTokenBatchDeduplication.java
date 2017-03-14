@@ -73,7 +73,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
     @Test(timeout = TEST_TIMEOUT)
     public void given_the_message_is_sent_twice_then_it_is_deduplicated_and_received_exactly_once() throws InterruptedException, JMSException {
         sendBatchWithSerialId(1);
-        sendBatchWithSerialId(1);
+        //sendBatchWithSerialId(1);
 
         // we will be able to receive a message just once
         firstBatch.await();
@@ -85,7 +85,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
     @Test(timeout = TEST_TIMEOUT)
     public void given_the_message_was_already_sent_then_sending_it_again_will_deduplicate_it() throws InterruptedException, JMSException {
         // any other try for sending the message with same ID...
-        sendBatchWithSerialId(1);
+       sendBatchWithSerialId(1);
         // ...will again mean the message won't be accepted to the queue (will be de-duplicated based on its ID)
         Thread.sleep(1000);
         assertEquals(1, counter.get());
@@ -96,7 +96,7 @@ public class TestTokenBatchDeduplication extends AbstractJMSTest {
     public void given_the_message_has_different_serialId_then_it_can_be_again_delivered_exactly_once() throws InterruptedException, JMSException {
         // but sending message with different ID will again deliver message
         sendBatchWithSerialId(2);
-        sendBatchWithSerialId(2);
+        //sendBatchWithSerialId(2);
         secondBatch.await();
         Thread.sleep(1000);
         assertEquals(2, counter.get());
