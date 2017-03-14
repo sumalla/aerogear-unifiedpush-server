@@ -34,9 +34,6 @@ import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException
  */
 public abstract class AbstractJMSMessageProducer {
 
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
-
     @Resource(mappedName = "java:/JmsXA")
     private ConnectionFactory xaConnectionFactory;
 
@@ -79,11 +76,7 @@ public abstract class AbstractJMSMessageProducer {
     private void send(Destination destination, Serializable message, String propertyName, String propertValue, boolean transacted) {
         Connection connection = null;
         try {
-            if (transacted) {
-                connection = xaConnectionFactory.createConnection();
-            } else {
-                connection = connectionFactory.createConnection();
-            }
+            connection = xaConnectionFactory.createConnection();
             Session session = connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
             MessageProducer messageProducer = session.createProducer(destination);
             connection.start();

@@ -41,9 +41,6 @@ import org.jboss.aerogear.unifiedpush.message.exception.MessageDeliveryException
 @Stateless
 public class JmsClient {
 
-    @Resource(mappedName = "java:/ConnectionFactory")
-    private ConnectionFactory connectionFactory;
-
     @Resource(mappedName = "java:/JmsXA")
     private ConnectionFactory xaConnectionFactory;
 
@@ -136,7 +133,7 @@ public class JmsClient {
          */
         public ObjectMessage from(Destination destination) {
             try {
-                connection = connectionFactory.createConnection();
+                connection = xaConnectionFactory.createConnection();
                 Session session = connection.createSession(false, acknowledgeMode);
                 MessageConsumer messageConsumer;
                 if (selector != null) {
@@ -207,7 +204,7 @@ public class JmsClient {
         public void to(Destination destination) {
             Connection connection = null;
             try {
-                connection = connectionFactory.createConnection();
+                connection = xaConnectionFactory.createConnection();
                 Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 MessageProducer messageProducer = session.createProducer(destination);
                 connection.start();

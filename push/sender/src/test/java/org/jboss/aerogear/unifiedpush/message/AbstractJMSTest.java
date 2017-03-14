@@ -28,7 +28,7 @@ import org.jboss.aerogear.unifiedpush.message.util.JmsClient.JmsSender;
 
 public abstract class AbstractJMSTest {
 
-    @Resource(mappedName = "java:/ConnectionFactory")
+    @Resource(mappedName = "java:/JmsXA")
     private ConnectionFactory connectionFactory;
 
     @Inject

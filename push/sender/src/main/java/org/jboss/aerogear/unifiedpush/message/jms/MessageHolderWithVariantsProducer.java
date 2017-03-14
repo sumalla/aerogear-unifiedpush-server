@@ -33,7 +33,7 @@ import org.jboss.aerogear.unifiedpush.message.holder.MessageHolderWithVariants;
 @Stateless
 public class MessageHolderWithVariantsProducer extends AbstractJMSMessageProducer {
 
-    @Resource(mappedName = "java:/ConnectionFactory")
+    @Resource(mappedName = "java:/JmsXA")
     private ConnectionFactory connectionFactory;
 
     @Resource(mappedName = "java:/queue/AdmPushMessageQueue")

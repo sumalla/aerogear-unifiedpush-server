@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractJMSMessageListener<T> implements MessageListener {
 
-    @Resource(mappedName = "java:/ConnectionFactory")
+    @Resource(mappedName = "java:/JmsXA")
     private ConnectionFactory connectionFactory;
 
     private final Logger logger = LoggerFactory.getLogger(AbstractJMSMessageListener.class);
