@@ -98,7 +98,7 @@ public class NotificationDispatcher {
 
         @Override
         public void onSuccess() {
-            logger.debug(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
+            logger.error(String.format("Sent '%s' message to '%d' devices", variant.getType().getTypeName(), tokenSize));
             updateStatusOfPushMessageInformation(pushMessageInformation, variant.getVariantID(), tokenSize, Boolean.TRUE);
         }
 
