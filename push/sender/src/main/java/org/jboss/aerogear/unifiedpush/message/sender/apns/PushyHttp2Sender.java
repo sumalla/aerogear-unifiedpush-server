@@ -80,44 +80,62 @@ public class PushyHttp2Sender implements PushNotificationSender {
             }
         }
 
-        final ApnsClient apnsClient = buildApnsClient(iOSVariant);
-
-        // connect:
-        final Future<Void> connectFuture = connectToDestinations(iOSVariant, apnsClient);
-        try {
-            connectFuture.await();
-        } catch (InterruptedException e) {
-
-            senderCallback.onError(e.getMessage());
-            logger.error("Error connecting to APNs", e);
-        }
-
-
-        for (final String token : tokens) {
-            final AeroGearApnsPushNotification pushNotification = new AeroGearApnsPushNotification(token, payload);
-            final Future<PushNotificationResponse<AeroGearApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
+        final ApnsClient apnsClient;
+        {
             try {
-                handlePushNotificationResponsePerToken(notificationSendFuture.get());
+                apnsClient = buildApnsClient(iOSVariant);
             } catch (Exception e) {
-                logger.warn(String.format("Error delivering message for '%s'", token), e);
+                logger.error(e.getMessage(), e);
+                senderCallback.onError(e.getMessage());
+                return;
             }
         }
 
-        // we have managed to send all messages ;-)
-        senderCallback.onSuccess();
+        // connect and move on with sending in the background:
+        final Future<Void> connectFuture = connectToDestinations(iOSVariant, apnsClient);
+        connectFuture.addListener(connectingFuture -> {
 
+            if (connectingFuture.isSuccess() && apnsClient.isConnected()) {
 
-        // stop connection
-        final Future<Void> disconnectFuture = apnsClient.disconnect();
-        try {
-            disconnectFuture.await();
+                logger.debug("sending payload for all tokens to APNS");
 
-            clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), invalidTokens);
+                tokens.forEach(token -> {
 
+                    final AeroGearApnsPushNotification pushNotification = new AeroGearApnsPushNotification(token, payload);
+                    final Future<PushNotificationResponse<AeroGearApnsPushNotification>> notificationSendFuture = apnsClient.sendNotification(pushNotification);
 
-        } catch (InterruptedException e) {
-            logger.info("Error disconnecting from APNs", e);
-        }
+                    notificationSendFuture.addListener(pushNotificationSendFuture -> {
+                        if (pushNotificationSendFuture.isSuccess()) {
+                            handlePushNotificationResponsePerToken(notificationSendFuture.get());
+                        }
+                    });
+                });
+
+                // we have managed to dispatch all messages ;-)
+                senderCallback.onSuccess();
+
+                final Future<Void> disconnectFuture = apnsClient.disconnect();
+                disconnectFuture.addListener(disconnectingFuture -> {
+
+                    if (disconnectingFuture.isSuccess()) {
+                        logger.debug("Disconnected from APNS");
+                    } else {
+                        final Throwable t = disconnectingFuture.cause();
+                        logger.warn(t.getMessage(), t);
+                    }
+
+                    // once disconnected, time to clean the DB
+                    logger.debug(String.format("Deleting %d invalid tokens for %s variant (ID: %s)", invalidTokens.size(), iOSVariant.getType(), iOSVariant.getVariantID()));
+                    clientInstallationService.removeInstallationsForVariantByDeviceTokens(iOSVariant.getVariantID(), invalidTokens);
+                });
+            } else {
+
+                final Throwable t = connectingFuture.cause();
+                logger.error("Error connecting to APNs", t);
+                senderCallback.onError(t.getMessage());
+
+            }
+        });
     }
 
     private void handlePushNotificationResponsePerToken(final PushNotificationResponse<AeroGearApnsPushNotification> pushNotificationResponse ) {
@@ -169,7 +187,6 @@ public class PushyHttp2Sender implements PushNotificationSender {
         return payloadBuilder.buildWithDefaultMaximumLength();
     }
 
-
     private ApnsClient buildApnsClient(final iOSVariant iOSVariant) {
 
         // this check should not be needed, but you never know:
@@ -200,7 +217,7 @@ public class PushyHttp2Sender implements PushNotificationSender {
 
     private Future<Void> connectToDestinations(final iOSVariant iOSVariant, final ApnsClient apnsClient) {
 
-        String apnsHost = null;
+        String apnsHost;
         int apnsPort = ApnsClient.DEFAULT_APNS_PORT;
 
         // are we production or development ?
