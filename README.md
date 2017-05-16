@@ -10,6 +10,7 @@ The _AeroGear UnifiedPush Server_ is a server that allows sending push notificat
 
 <img src="https://raw.githubusercontent.com/aerogear/aerogear-unifiedpush-server/master/ups-ui-screenshot.png" height="427px" width="550px" />
 
+
 ## Project Info
 
 |                 | Project Info  |
