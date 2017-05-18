@@ -64,9 +64,9 @@
             <jms-queue name="MetricsQueue">
                 <entry name="/queue/MetricsQueue"/>
             </jms-queue>
-            <jms-queue name="TriggerMetricCollectionQueue">
+            <!--jms-queue name="TriggerMetricCollectionQueue">
                 <entry name="/queue/TriggerMetricCollectionQueue"/>
-            </jms-queue>
+            </jms-queue-->
             <jms-queue name="TriggerVariantMetricCollectionQueue">
                 <entry name="/queue/TriggerVariantMetricCollectionQueue"/>
             </jms-queue>
