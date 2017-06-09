@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 package org.jboss.aerogear.unifiedpush.dao;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
 
 
-public interface VariantMetricInformationDao extends GenericBaseDao<VariantMetricInformation, String>{
+public interface VariantMetricInformationDao extends GenericBaseDao<VariantErrorStatus, String>{
 
     /**
      * Finds a VariantMetricInformation instance by the related variantID
@@ -27,7 +27,7 @@ public interface VariantMetricInformationDao extends GenericBaseDao<VariantMetri
      * @param pushMessageinformationId of the @link{{org.jboss.aerogear.unifiedpush.api.PushMessageInformation}} that owns this instance
      * @return a VariantMetricInformation instance
      */
-    VariantMetricInformation findVariantMetricInformationByVariantID(String variantID, String pushMessageinformationId);
+    VariantErrorStatus findVariantMetricInformationByVariantID(String variantID, String pushMessageinformationId);
 
 }
 

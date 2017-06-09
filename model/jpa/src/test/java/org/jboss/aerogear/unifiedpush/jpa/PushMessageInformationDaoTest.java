@@ -18,6 +18,7 @@ package org.jboss.aerogear.unifiedpush.jpa;
 
 import net.jakubholy.dbunitexpress.EmbeddedDbTesterRule;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dto.MessageMetrics;
@@ -289,9 +290,9 @@ public class PushMessageInformationDaoTest {
         assertThat(messageInformations).hasSize(0);
     }
 
-//    @Test
-//    public void findVariantMetricByVariantId() {
-//        VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID("213","1");
-//        assertThat(variantMetricInformation).isNotNull();
-//    }
+    @Test
+    public void findVariantMetricByVariantId() {
+        VariantErrorStatus variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID("213","1");
+        assertThat(variantMetricInformation).isNotNull();
+    }
 }

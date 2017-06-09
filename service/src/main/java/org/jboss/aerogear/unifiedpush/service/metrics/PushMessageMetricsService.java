@@ -24,7 +24,6 @@ import javax.inject.Inject;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
 import org.jboss.aerogear.unifiedpush.dao.PageResult;
 import org.jboss.aerogear.unifiedpush.dao.PushMessageInformationDao;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
@@ -156,11 +155,11 @@ public class PushMessageMetricsService {
             pushMessageInformation.incrementAppOpenCounter();
 
             //update the variant counter
-            VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID(variantID, pushMessageInformation.getId());
-            variantMetricInformation.incrementVariantOpenCounter();
-            variantMetricInformationDao.update(variantMetricInformation);
-
-            pushMessageInformationDao.update(pushMessageInformation);
+//            VariantMetricInformation variantMetricInformation = variantMetricInformationDao.findVariantMetricInformationByVariantID(variantID, pushMessageInformation.getId());
+//            variantMetricInformation.incrementVariantOpenCounter();
+//            variantMetricInformationDao.update(variantMetricInformation);
+//
+//            pushMessageInformationDao.update(pushMessageInformation);
         }
 
     }

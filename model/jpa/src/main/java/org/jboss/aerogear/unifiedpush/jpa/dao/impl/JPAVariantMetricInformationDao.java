@@ -17,24 +17,24 @@
 
 package org.jboss.aerogear.unifiedpush.jpa.dao.impl;
 
-import org.jboss.aerogear.unifiedpush.api.VariantMetricInformation;
+import org.jboss.aerogear.unifiedpush.api.VariantErrorStatus;
 import org.jboss.aerogear.unifiedpush.dao.VariantMetricInformationDao;
 
 
-public class JPAVariantMetricInformationDao extends JPABaseDao<VariantMetricInformation, String> implements VariantMetricInformationDao {
+public class JPAVariantMetricInformationDao extends JPABaseDao<VariantErrorStatus, String> implements VariantMetricInformationDao {
 
     @Override
-    public VariantMetricInformation findVariantMetricInformationByVariantID(String variantID, String pushmessageinformationId){
+    public VariantErrorStatus findVariantMetricInformationByVariantID(String variantID, String pushmessageinformationId){
         return getSingleResultForQuery(createQuery(
-                "select vmi from VariantMetricInformation vmi where vmi.variantID = :variantId and vmi.pushMessageInformation.id = :pushmessageinformationId")
+                "select vmi from VariantErrorStatus vmi where vmi.variantID = :variantId and vmi.pushMessageInformation.id = :pushmessageinformationId")
                 .setParameter("variantId", variantID)
                 .setParameter("pushmessageinformationId",pushmessageinformationId));
 
     }
 
     @Override
-    public Class<VariantMetricInformation> getType() {
-        return VariantMetricInformation.class;
+    public Class<VariantErrorStatus> getType() {
+        return VariantErrorStatus.class;
     }
 
 }

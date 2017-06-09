@@ -6,13 +6,10 @@
         <id name="pushMessageVariantId" type="java.lang.String">
             <column name="push_message_variant_id" not-null="true"/>
         </id>
-        <property name="errorReason" type="java.lang.Long">
+        <property name="errorReason" type="java.lang.String">
             <column name="error_reason" />
         </property>
-        <property name="pushJobId" type="java.lang.Boolean" insert="false" update="false">
-            <column name="push_job_id"/>
-        </property>
-        <property name="variantId" type="java.lang.Long">
+        <property name="variantID" type="java.lang.String">
             <column name="variant_id" />
         </property>
         <many-to-one name="pushMessageInformation" class="org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation" fetch="join">

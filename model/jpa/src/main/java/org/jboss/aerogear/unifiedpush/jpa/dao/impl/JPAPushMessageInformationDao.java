@@ -73,7 +73,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<FlatPushMessageInfo
 
     @Override
     public long getNumberOfPushMessagesForVariant(String variantID) {
-        return createQuery("select count(*) from VariantMetricInformation vmi where vmi.variantID = :variantID", Long.class)
+        return createQuery("select count(*) from VariantErrorStatus vmi where vmi.variantID = :variantID", Long.class)
                 .setParameter("variantID", variantID).getSingleResult();
     }
 
@@ -115,7 +115,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<FlatPushMessageInfo
 
     @Override
     public List<String> findVariantIDsWithWarnings(String loginName) {
-        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi, Variant va " +
+        return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi, Variant va " +
                 " WHERE vmi.variantID = va.variantID AND va.developer = :developer)" +
                 " and vmi.deliveryStatus = false", String.class)
                 .setParameter("developer", loginName)
@@ -135,11 +135,11 @@ public class JPAPushMessageInformationDao extends JPABaseDao<FlatPushMessageInfo
     @Override
     public void deletePushInformationOlderThan(Date oldest) {
         // TODO: use criteria API...
-        entityManager.createQuery("delete from VariantMetricInformation vmi where vmi.pushMessageInformation.id in (select pmi FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest)")
+        entityManager.createQuery("delete from VariantErrorStatus vmi where vmi.pushMessageInformation.id in (select pmi FROM FlatPushMessageInformation pmi WHERE pmi.submitDate < :oldest)")
                 .setParameter("oldest", oldest)
                 .executeUpdate();
 
-        int affectedRows = entityManager.createQuery("delete FROM PushMessageInformation pmi WHERE pmi.submitDate < :oldest")
+        int affectedRows = entityManager.createQuery("delete FROM FlatPushMessageInformation pmi WHERE pmi.submitDate < :oldest")
                 .setParameter("oldest", oldest)
                 .executeUpdate();
 
@@ -149,7 +149,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<FlatPushMessageInfo
     //Admin queries
     @Override
     public List<String> findVariantIDsWithWarnings() {
-        return createQuery("select distinct vmi.variantID from VariantMetricInformation vmi" +
+        return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi" +
                 " where vmi.deliveryStatus = false", String.class)
                 .getResultList();
     }

@@ -33,7 +33,7 @@
         </property>
         <set name="errors" table="variant_error_status" inverse="true" lazy="false" cascade="all">
             <key>
-                <column name="push_message_info_id" not-null="true" />
+                <column name="push_job_id" not-null="true" />
             </key>
             <one-to-many class="org.jboss.aerogear.unifiedpush.api.VariantErrorStatus" />
         </set>
