@@ -149,8 +149,7 @@ public class JPAPushMessageInformationDao extends JPABaseDao<FlatPushMessageInfo
     //Admin queries
     @Override
     public List<String> findVariantIDsWithWarnings() {
-        return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi" +
-                " where vmi.deliveryStatus = false", String.class)
+        return createQuery("select distinct vmi.variantID from VariantErrorStatus vmi", String.class)
                 .getResultList();
     }
 
