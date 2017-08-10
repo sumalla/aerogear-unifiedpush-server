@@ -53,7 +53,7 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
     @Resource(mappedName = "java:/queue/WNSTokenBatchQueue")
     private Queue wnsTokenBatchQueue;
 
-    public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
+    public void queueMessageVariantForProcessing(/*@Observes @DispatchToQueue */ MessageHolderWithTokens msg) {
         String deduplicationId = String.format("%s-%s", msg.getPushMessageInformation().getId(), msg.getSerialId());
         jmsClient.send(msg).withDuplicateDetectionId(deduplicationId).to(selectQueue(msg.getVariant().getType()));
     }

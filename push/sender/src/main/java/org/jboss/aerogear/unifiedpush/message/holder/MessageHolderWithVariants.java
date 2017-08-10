@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush.message.holder;
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.api.Variant;
 import org.jboss.aerogear.unifiedpush.api.VariantType;
+import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
 import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class MessageHolderWithVariants extends AbstractMessageHolder {
      * @param lastTokenFromPreviousBatch last token from previous stream
      */
     public MessageHolderWithVariants(FlatPushMessageInformation pushMessageInformation, UnifiedPushMessage unifiedPushMessage, VariantType variantType, Collection<Variant> variants, int lastSerialId, String lastTokenFromPreviousBatch) {
-        super(pushMessageInformation, unifiedPushMessage);
+        super(pushMessageInformation, (InternalUnifiedPushMessage) unifiedPushMessage);
         this.variantType = variantType;
         this.variants = new ArrayList<>(variants);
         this.lastSerialId = lastSerialId;
