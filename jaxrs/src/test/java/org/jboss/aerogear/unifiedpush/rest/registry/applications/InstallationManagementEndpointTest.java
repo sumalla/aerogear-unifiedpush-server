@@ -1,8 +1,8 @@
 package org.jboss.aerogear.unifiedpush.rest.registry.applications;
 
-import org.jboss.resteasy.specimpl.UriInfoImpl;
 import org.jboss.resteasy.spi.Link;
 import org.jboss.resteasy.spi.LinkHeader;
+import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.junit.Test;
 
 import javax.ws.rs.core.PathSegment;
@@ -21,7 +21,7 @@ public class InstallationManagementEndpointTest {
     @Test
     public void shouldGenerateHeaderLinksFirstPage() throws URISyntaxException {
         //given
-        final UriInfoImpl uriInfo = getUriInfo();
+        final ResteasyUriInfo uriInfo = getUriInfo();
 
         //when
         final LinkHeader linkHeader = endpoint.getLinkHeader(0, 3, uriInfo);
@@ -37,7 +37,7 @@ public class InstallationManagementEndpointTest {
     @Test
     public void shouldGenerateHeaderLinksNormalPage() throws URISyntaxException {
         //given
-        final UriInfoImpl uriInfo = getUriInfo();
+        final ResteasyUriInfo uriInfo = getUriInfo();
 
         //when
         final LinkHeader linkHeader = endpoint.getLinkHeader(2, 3, uriInfo);
@@ -54,7 +54,7 @@ public class InstallationManagementEndpointTest {
     @Test
     public void shouldGenerateHeaderLinksLastPage() throws URISyntaxException {
         //given
-        final UriInfoImpl uriInfo = getUriInfo();
+        final ResteasyUriInfo uriInfo = getUriInfo();
 
         //when
         final LinkHeader linkHeader = endpoint.getLinkHeader(3, 3, uriInfo);
@@ -75,7 +75,7 @@ public class InstallationManagementEndpointTest {
                 .orElse(null);
     }
 
-    private UriInfoImpl getUriInfo() throws URISyntaxException {
-        return new UriInfoImpl(new URI("/"), new URI("http://localhost"), "/", "", Collections.<PathSegment>emptyList());
+    private ResteasyUriInfo getUriInfo() throws URISyntaxException {
+        return new ResteasyUriInfo(new URI("/"), new URI("http://localhost"));
     }
 }

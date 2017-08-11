@@ -2,10 +2,11 @@
     <deployment>
         <dependencies>
             <module name="org.jboss.resteasy.resteasy-jackson-provider"  services="import" />
+            <module name="org.jboss.resteasy.resteasy-jackson2-provider"  services="import" />
             <module name="org.jboss.xnio"/>
         </dependencies>
-        <exclusions>
+        <!--exclusions>
             <module name="org.jboss.resteasy.resteasy-jackson2-provider" />
-        </exclusions>
+        </exclusions-->
     </deployment>
 </jboss-deployment-structure>

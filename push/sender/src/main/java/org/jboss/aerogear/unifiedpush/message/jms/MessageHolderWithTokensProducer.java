@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.message.jms;
 
 import javax.annotation.Resource;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
 

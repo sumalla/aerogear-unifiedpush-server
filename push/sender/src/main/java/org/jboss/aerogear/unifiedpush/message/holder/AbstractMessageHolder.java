@@ -18,7 +18,6 @@ package org.jboss.aerogear.unifiedpush.message.holder;
 
 import org.jboss.aerogear.unifiedpush.api.FlatPushMessageInformation;
 import org.jboss.aerogear.unifiedpush.message.InternalUnifiedPushMessage;
-import org.jboss.aerogear.unifiedpush.message.UnifiedPushMessage;
 
 import java.io.Serializable;
 
