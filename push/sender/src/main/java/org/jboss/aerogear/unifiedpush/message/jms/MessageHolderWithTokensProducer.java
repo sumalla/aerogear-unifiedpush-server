@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush.message.jms;
 
 import javax.annotation.Resource;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.Queue;
 
@@ -53,7 +52,7 @@ public class MessageHolderWithTokensProducer extends AbstractJMSMessageProducer 
     @Resource(mappedName = "java:/queue/WNSTokenBatchQueue")
     private Queue wnsTokenBatchQueue;
 
-    public void queueMessageVariantForProcessing(@Observes @DispatchToQueue MessageHolderWithTokens msg) {
+    public void queueMessageVariantForProcessing(/*@Observes @DispatchToQueue */ MessageHolderWithTokens msg) {
         String deduplicationId = String.format("%s-%s", msg.getPushMessageInformation().getId(), msg.getSerialId());
         jmsClient.send(msg).withDuplicateDetectionId(deduplicationId).to(selectQueue(msg.getVariant().getType()));
     }
