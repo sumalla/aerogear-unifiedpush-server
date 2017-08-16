@@ -42,7 +42,7 @@ public class InstallationMetricsKafkaConsumer {
     /**
      * Update metrics analytics based on push message id from the consumed record.
      */
-    @Consumer(topic = KAFKA_INSTALLATION_TOPIC, groupId = KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID)
+    @Consumer(topics = KAFKA_INSTALLATION_TOPIC, groupId = KAFKA_INSTALLATION_TOPIC_CONSUMER_GROUP_ID)
     public void receiver(final String pushMessageId) {
         logger.info("Update metric analytics for push message's ID {}", pushMessageId);
         metricsService.updateAnalytics(pushMessageId);
