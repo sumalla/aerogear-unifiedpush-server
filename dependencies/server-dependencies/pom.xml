@@ -106,11 +106,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-adapter-core</artifactId>
-        </dependency>
-
         <!-- resteasy -->
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
