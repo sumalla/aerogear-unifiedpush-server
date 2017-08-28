@@ -1,0 +1,9 @@
+sso:
+  image: jboss/keycloak:3.2.1.Final
+  environment:
+   - MYSQL_ROOT_PASSWORD=supersecret
+   - KEYCLOAK_USER=admin
+   - KEYCLOAK_PASSWORD=admin
+     #  ports:
+     #- 9999:8080
+
