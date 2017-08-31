@@ -30,6 +30,6 @@
     <modules>
         <module>api</module>
         <module>push</module>
-	<module>jpa</module>
+	    <module>jpa</module>
     </modules>
 </project>
