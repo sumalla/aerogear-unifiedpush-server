@@ -28,6 +28,7 @@ import org.jboss.aerogear.unifiedpush.api.VariantType;
 @Qualifier
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated
 public @interface SenderType {
     VariantType value();
 }

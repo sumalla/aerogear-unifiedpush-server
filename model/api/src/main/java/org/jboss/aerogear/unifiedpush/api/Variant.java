@@ -29,7 +29,6 @@ import java.util.UUID;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AndroidVariant.class, name = "AndroidVariant"),
-        @JsonSubTypes.Type(value = AdmVariant.class, name = "AdmVariant"),
         @JsonSubTypes.Type(value = iOSVariant.class, name = "iOSVariant"),
         @JsonSubTypes.Type(value = WindowsWNSVariant.class, name = "WindowsWNSVariant")
 })
