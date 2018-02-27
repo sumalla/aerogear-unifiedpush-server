@@ -25,7 +25,7 @@ public class DeviceRegistrationEndpoint {
 
     private static final Logger logger = LoggerFactory.getLogger(DeviceRegistrationEndpoint.class);
     private static final Counter promDeviceRegisterRequestsTotal = Counter.build()
-            .name("device_register_requests_total")
+            .name("aerogear_ups_device_register_requests_total")
             .help("Total number of Device register requests.")
             .register();
 
