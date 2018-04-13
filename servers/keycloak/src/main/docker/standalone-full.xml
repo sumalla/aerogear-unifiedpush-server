@@ -36,7 +36,7 @@
     </extensions>
     <system-properties>
         <property name="ups.realm.name" value="aerogear"/>
-        <property name="ups.auth.server.url" value="localhost:20001"/>
+        <property name="ups.auth.server.url" value="${env.KEYCLOAK_SERVICE_URL}"/>
     </system-properties>
     <management>
         <security-realms>

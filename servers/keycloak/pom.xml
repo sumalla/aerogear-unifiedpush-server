@@ -44,6 +44,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.aerogear.unifiedpush</groupId>
+            <artifactId>admin-ui</artifactId>
+            <version>1.2.12</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+        <dependency>
           <groupId>org.keycloak</groupId>
           <artifactId>keycloak-wildfly-adapter</artifactId>
           <exclusions>
@@ -149,10 +157,10 @@
                                     <descriptorRef>rootWar</descriptorRef>
                                 </assembly>
                             </build>
-                            <external>
+                            <!--external>
                                 <type>compose</type>
                                 <composeFile>docker-compose.yml</composeFile>
-                            </external>
+                            </external-->
                         </image>
                     </images>
                 </configuration>
@@ -160,5 +168,46 @@
 
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>compose</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.24.0</version>
+                        <executions>
+                            <execution>
+                                <id>dmp</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>aerogear/ups:kc</name>
+                                    <alias>server</alias>
+                                    <external>
+                                        <ignoreBuild>true</ignoreBuild>
+                                        <type>compose</type>
+                                        <composeFile>docker-compose.yml</composeFile>
+                                    </external>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+
+        </profile>
+    </profiles>
+
 
 </project>

@@ -3,9 +3,11 @@ version: '2.1'
 services:
   unifiedpushserver:
     image: aerogear/ups:kc
-    environment:
-        KEYCLOAK_SERVICE_HOST: "localhost"
-        KEYCLOAK_SERVICE_PORT: "20001"
+    volumes:
+       - ./helper:/ups-helper:z
+    entrypoint: "/ups-helper/exportKeycloakHost.sh"
+    links:
+      - keycloakServer:keycloak
     ports:
       - 18080:8080
   keycloakServer:
@@ -16,5 +18,3 @@ services:
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
-    ports:
-      - 20001:8080
